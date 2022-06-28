@@ -8,7 +8,7 @@ linters-settings:
   gofmt:
     simplify: true
   goimports:
-    local-prefixes: github.com/agflow/consumer-backend
+    local-prefixes: github.com/agflow/tools
   gocyclo:
     min-complexity: 10
   dupl:
