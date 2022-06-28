@@ -3,6 +3,7 @@ module github.com/agflow/tools
 go 1.18
 
 require (
+	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.5
 	github.com/thoas/go-funk v0.9.2
 )

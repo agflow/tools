@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/agflow/tools/log"
+	"github.com/agflow/tools/types"
 )
 
 func Hash(vs interface{}) (string, error) {
@@ -44,12 +45,12 @@ func GroupBy(on, dest interface{}, cols []string, funcs map[string]AggrFunc) err
 	destVal := reflect.ValueOf(dest)
 	direct := reflect.Indirect(destVal)
 
-	sliceType, err := BaseType(destVal.Type(), reflect.Slice)
+	sliceType, err := types.BaseType(destVal.Type(), reflect.Slice)
 	if err != nil {
 		return err
 	}
 
-	baseType := DeRef(sliceType.Elem())
+	baseType := types.DeRef(sliceType.Elem())
 
 	s := reflect.ValueOf(on)
 	finishChan := make(chan bool)
@@ -125,12 +126,12 @@ func GroupByFold(on, dest interface{}, cols []string, funcs map[string]FoldFunc)
 	destVal := reflect.ValueOf(dest)
 	direct := reflect.Indirect(destVal)
 
-	sliceType, err := BaseType(destVal.Type(), reflect.Slice)
+	sliceType, err := types.BaseType(destVal.Type(), reflect.Slice)
 	if err != nil {
 		return err
 	}
 
-	baseType := DeRef(sliceType.Elem())
+	baseType := types.DeRef(sliceType.Elem())
 
 	s := reflect.ValueOf(on)
 	for i := 0; i < s.Len(); i++ {
