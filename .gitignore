@@ -1,0 +1,51 @@
+node_module/
+node_modules/
+bin/
+nogit/
+.envrc
+.secure
+agflow-frontend-firebase-adminsdk-my5zy-6e0a4e4058.json
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Debug binaries
+__debug_bin
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+## custom development enviroments
+*~
+*.swp
+/.emacs.desktop
+/.emacs.desktop.lock
+.dir-locals.el
+.elc
+auto-save-list
+tramp
+.\#*
+Session.vim
+.netrwhist
+.idea/
+sftp-config.json
+.DS_Store
+.org-id-locations
+*_archive
+.tags
+.ctags
+.vscode
+
+# dev env files
+.env_local
+docker-compose-local.yml

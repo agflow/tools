@@ -1,0 +1,83 @@
+---
+linters-settings:
+  errcheck:
+    check-type-assertions: false
+    check-blank: true
+  govet:
+    check-shadowing: false
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/agflow/consumer-backend
+  gocyclo:
+    min-complexity: 10
+  dupl:
+    threshold: 60
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  depguard:
+    list-type: blacklist
+    include-go-root: false
+    packages:
+      - github.com/davecgh/go-spew/spew
+  misspell:
+    locale: US
+  lll:
+    line-length: 96
+    tab-width: 1
+  unused:
+    check-exported: false
+  unparam:
+    check-exported: false
+  nakedret:
+    max-func-lines: 30
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+  gocritic:
+    disabled-checks:
+      - unnamedResult
+      - hugeParam
+      - whyNoLint
+    enabled-tags:
+      - performance
+      - style
+      - diagnostic
+      - experimental
+      - opinionated
+issues:
+  exclude-use-default: false
+linters:
+  enable-all: false
+  disable-all: true
+  enable:
+    # - lll
+    - misspell
+    - goconst
+    - gochecknoinits
+    - goimports
+    - ineffassign
+    - nakedret
+    - prealloc
+    - gocyclo
+    - gochecknoglobals
+    - exportloopref
+    - predeclared
+    - gofumpt
+    - gocritic
+    - vet
+    # - revive
+    - bodyclose
+    - deadcode
+    - errcheck
+    - gosec
+    - structcheck
+    - unconvert
+    # - dupl
+    - varcheck
+    - unparam
+    - staticcheck
+run:
+  timeout: 10m
