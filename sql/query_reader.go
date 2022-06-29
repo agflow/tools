@@ -56,8 +56,8 @@ func setQueries(v reflect.Value, queriesFS embed.FS, dir string) {
 
 // mustReadSQLFiles fills queries into Query variable.
 func mustReadSQLFiles(root string, queriesFS embed.FS, query interface{}) {
-	q := reflect.ValueOf(&query).Elem()
-	v := reflect.Indirect(reflect.ValueOf(&query))
+	q := reflect.ValueOf(query).Elem()
+	v := reflect.Indirect(reflect.ValueOf(query))
 	for i := 0; i < v.NumField(); i++ {
 		f := v.Type().Field(i)
 		mustReadQueries(q.FieldByName(f.Name), queriesFS,
