@@ -20,12 +20,12 @@ type AWSLambdaResponse struct {
 }
 
 // GetUser gets user from authentication system
-func GetUser(token string) (*model.User, error) {
+func GetUser(token, funcName, region string) (*model.User, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	client := lambda.New(sess, &aws.Config{Region: aws.String("eu-west-1")})
+	client := lambda.New(sess, &aws.Config{Region: aws.String(region)})
 	payload := struct {
 		Headers map[string]string `json:"headers"`
 	}{
@@ -41,7 +41,7 @@ func GetUser(token string) (*model.User, error) {
 
 	result, err := client.Invoke(
 		&lambda.InvokeInput{
-			FunctionName:   aws.String("auth-AuthFunction-C5c7YBM7DRGD"),
+			FunctionName:   aws.String(funcName),
 			InvocationType: aws.String("RequestResponse"),
 			Payload:        payloadByte,
 		},
