@@ -1,62 +1,70 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
-	"net/http"
+	"strings"
+	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/go-redis/redis/v8"
 
+	"github.com/agflow/tools/agstring"
+	"github.com/agflow/tools/consumer-backend/accountmanagement"
 	"github.com/agflow/tools/consumer-backend/model"
+	"github.com/agflow/tools/log"
 )
 
-type AWSLambdaResponse struct {
-	StatusCode        int               `json:"statusCode"`
-	Headers           map[string]string `json:"headers"`
-	MultiValueHeaders map[string]string `json:"multiValueHeaders"`
-	Body              string            `json:"body"`
-}
-
-// GetUser gets user from authentication system
-func GetUser(token, funcName, region string) (*model.User, error) {
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
-	client := lambda.New(sess, &aws.Config{Region: aws.String(region)})
-	payload := struct {
-		Headers map[string]string `json:"headers"`
-	}{
-		Headers: map[string]string{
-			"Fusionauth": token,
-		},
+func getUserFromRedis(rdb *redis.Client, key string) *model.User {
+	if rdb == nil {
+		return nil
 	}
 
-	payloadByte, err := json.Marshal(payload)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	defer cancel()
+
+	val, err := rdb.Get(ctx, "user:"+key).Bytes()
+	if err == nil && val != nil {
+		user := &model.User{}
+		if err := json.Unmarshal(val, user); err == nil {
+			return user
+		}
+		log.Infof("unable to unmarshal user object, %v", err)
+	}
+	return nil
+}
+
+func cacheUser(token string, user *model.User, redisClient *redis.Client) {
+	if redisClient == nil {
+		return
+	}
+
+	userBytes, err := json.Marshal(user)
+	if err != nil {
+		log.Warnf("can't marshal user object, err: %v", err)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	defer cancel()
+
+	// cache user
+	if err := redisClient.Set(ctx, "user:"+token, userBytes, 1*time.Minute).Err(); err != nil {
+		log.Warnf("can't set user cache value, err: %v", err)
+	}
+}
+
+func GetUser(token, cacheOptionsStr string, accountService accountmanagement.API, cacheService *redis.Client) (*model.User, error) {
+	cacheOptions := strings.Split(cacheOptionsStr, ",")
+	if user := getUserFromRedis(cacheService, token); user != nil && !agstring.ContainsAny(cacheOptions, "no-cache") {
+		return user, nil
+	}
+
+	user, err := accountService.GetUser(token)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := client.Invoke(
-		&lambda.InvokeInput{
-			FunctionName:   aws.String(funcName),
-			InvocationType: aws.String("RequestResponse"),
-			Payload:        payloadByte,
-		},
-	)
-	if err != nil || *result.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %w", "Error calling AuthFunction", err)
-	}
+	go cacheUser(token, user, cacheService)
 
-	var resp AWSLambdaResponse
-	if err := json.Unmarshal(result.Payload, &resp); err != nil {
-		return nil, err
-	}
-	var user model.User
-	if err := json.Unmarshal([]byte(resp.Body), &user); err != nil {
-		return nil, err
-	}
-	return &user, nil
+	return user, nil
 }
