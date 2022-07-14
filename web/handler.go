@@ -9,6 +9,6 @@ import (
 // Handler is a struct that packs all the necessary services for a web handler
 type Handler struct {
 	T        agtime.ClockTime
-	DBSvc    *db.Service
-	CacheSvc *cache.Service
+	DBSvc    db.Service
+	CacheSvc cache.Service
 }
