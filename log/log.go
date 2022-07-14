@@ -16,7 +16,7 @@ const (
 	timeFormat = "2006/01/02 15:04:05"
 )
 
-//nolint: gochecknoinits
+// nolint: gochecknoinits
 func init() {
 	log.SetFlags(0)
 }

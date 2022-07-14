@@ -1,4 +1,4 @@
-package sql
+package db
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"reflect"
 
 	"github.com/agflow/tools/log"
-	"github.com/agflow/tools/types"
+	"github.com/agflow/tools/typing"
 )
 
 // Select runs query on database with arguments and saves result on dest variable
@@ -112,13 +112,13 @@ func scanAll(rows *sql.Rows, dest interface{}, structOnly bool) error {
 	}
 	direct := reflect.Indirect(value)
 
-	slice, err := types.BaseType(value.Type(), reflect.Slice)
+	slice, err := typing.Base(value.Type(), reflect.Slice)
 	if err != nil {
 		return err
 	}
 
 	isPtr := slice.Elem().Kind() == reflect.Ptr
-	base := types.DeRef(slice.Elem())
+	base := typing.DeRef(slice.Elem())
 	scannable := isScannable(base)
 
 	if structOnly {

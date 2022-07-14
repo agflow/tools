@@ -26,7 +26,7 @@ func (v NullableString) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON unmarshals NullableString
-func (v *NullableString) UnmarshalJSON(data []byte) error {
+func (v *NullableString) UnmarshalJSON(data []byte) error { // nolint: dupl
 	// Unmarshalling into a pointer will let us detect null
 	var x *string
 	if err := json.Unmarshal(data, &x); err != nil {
@@ -69,7 +69,7 @@ func (v NullableInt) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON unmarshal NullableInt
-func (v *NullableInt) UnmarshalJSON(data []byte) error {
+func (v *NullableInt) UnmarshalJSON(data []byte) error { // nolint: dupl
 	// Unmarshalling into a pointer will let us detect null
 	var x *int64
 	if err := json.Unmarshal(data, &x); err != nil {
@@ -107,7 +107,7 @@ func (v NullableFloat) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON unmarshal NullableFloat
-func (v *NullableFloat) UnmarshalJSON(data []byte) error {
+func (v *NullableFloat) UnmarshalJSON(data []byte) error { // nolint: dupl
 	// Unmarshalling into a pointer will let us detect null
 	var x *float64
 	if err := json.Unmarshal(data, &x); err != nil {
