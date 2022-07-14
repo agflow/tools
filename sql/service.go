@@ -6,8 +6,7 @@ import (
 )
 
 type DBService struct {
-	db *sql.DB
-	API
+	DB *sql.DB
 }
 
 type API interface {
@@ -15,7 +14,7 @@ type API interface {
 }
 
 func (db *DBService) Select(dest interface{}, query string, args ...interface{}) error {
-	return Select(db.db, dest, query, args...)
+	return Select(db.DB, dest, query, args...)
 }
 
 func New(url string) (*DBService, error) {
@@ -27,7 +26,7 @@ func New(url string) (*DBService, error) {
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}
-	return &DBService{db: db}, nil
+	return &DBService{DB: db}, nil
 }
 
 func MustNew(url string) *DBService {
