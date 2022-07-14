@@ -120,10 +120,12 @@ func (t *NullableDate) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// TruncateMonth returns a nullable date with truncated month
 func (t *NullableDate) TruncateMonth() NullableDate {
 	return NewNullDate(TruncateMonth(t.Time))
 }
 
+// After checks if nullable date `t` is after time `a`
 func (t *NullableDate) After(a time.Time) bool {
 	if t.Valid {
 		return t.Time.After(a)
@@ -131,6 +133,7 @@ func (t *NullableDate) After(a time.Time) bool {
 	return false
 }
 
+// Before checks if nullable date `t` is before time `a`
 func (t *NullableDate) Before(a time.Time) bool {
 	if t.Valid {
 		return t.Time.Before(a)
@@ -138,6 +141,7 @@ func (t *NullableDate) Before(a time.Time) bool {
 	return false
 }
 
+// Equal checks if nullable date `t` is equal time `a`
 func (t *NullableDate) Equal(a time.Time) bool {
 	if t.Valid {
 		return t.Time.Equal(a)
@@ -145,6 +149,7 @@ func (t *NullableDate) Equal(a time.Time) bool {
 	return false
 }
 
+// AftEq checks if nullable date `t` is after or equal the time `a`
 func (t *NullableDate) AftEq(a time.Time) bool {
 	if t.Valid {
 		return t.After(a) || t.Equal(a)
@@ -152,6 +157,7 @@ func (t *NullableDate) AftEq(a time.Time) bool {
 	return false
 }
 
+// BfEq checks if nullable date `t` is before or equal the time `a`
 func (t *NullableDate) BfEq(a time.Time) bool {
 	if t.Valid {
 		return t.Before(a) || t.Equal(a)
@@ -159,6 +165,7 @@ func (t *NullableDate) BfEq(a time.Time) bool {
 	return false
 }
 
+// Between checks if nullable date `t` is between the times `a` and `b`
 func (t *NullableDate) Between(a, b time.Time) bool {
 	return t.AftEq(a) && t.BfEq(b)
 }

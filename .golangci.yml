@@ -39,7 +39,6 @@ linters-settings:
   gocritic:
     disabled-checks:
       - unnamedResult
-      - hugeParam
       - whyNoLint
     enabled-tags:
       - performance
@@ -53,7 +52,7 @@ linters:
   enable-all: false
   disable-all: true
   enable:
-    # - lll
+    - lll
     - misspell
     - goconst
     - gochecknoinits
@@ -68,14 +67,14 @@ linters:
     - gofumpt
     - gocritic
     - vet
-    # - revive
+    - revive
     - bodyclose
     - deadcode
     - errcheck
     - gosec
     - structcheck
     - unconvert
-    # - dupl
+    - dupl
     - varcheck
     - unparam
     - staticcheck

@@ -1,42 +1,31 @@
-package main
+package groupby
 
 import (
-	"crypto/sha512"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
 	"sync"
 	"time"
 
 	"github.com/agflow/tools/log"
-	"github.com/agflow/tools/types"
+	"github.com/agflow/tools/security"
+	"github.com/agflow/tools/typing"
 )
-
-func Hash(vs interface{}) (string, error) {
-	h := sha512.New()
-	r, err := json.Marshal(vs)
-	if err != nil {
-		return "", err
-	}
-	h.Write(r)
-	return fmt.Sprintf("%x", h.Sum(nil)), nil
-}
 
 func getGroupHash(v reflect.Value, cols []string) (string, error) {
 	grouped := make([]interface{}, len(cols))
 	for j := range cols {
 		grouped[j] = v.FieldByName(cols[j]).Interface()
 	}
-	return Hash(grouped)
+	return security.Hash(grouped)
 }
 
+// AggrFunc is an aggregation function
 type AggrFunc func([]interface{}) interface{}
 
 var wg sync.WaitGroup //nolint: gochecknoglobals
 
-// GroupBy groups a slice of structs with an aggregation function
-func GroupBy(on, dest interface{}, cols []string, funcs map[string]AggrFunc) error { //nolint: deadcode
+// Agg groups by a slice of structs with an aggregation function
+func Agg(on, dest interface{}, cols []string, funcs map[string]AggrFunc) error {
 	groupMap := make(map[interface{}]chan interface{})
 	if reflect.TypeOf(on).Kind() != reflect.Slice {
 		return errors.New("on needs to be slice")
@@ -45,12 +34,12 @@ func GroupBy(on, dest interface{}, cols []string, funcs map[string]AggrFunc) err
 	destVal := reflect.ValueOf(dest)
 	direct := reflect.Indirect(destVal)
 
-	sliceType, err := types.BaseType(destVal.Type(), reflect.Slice)
+	sliceType, err := typing.Base(destVal.Type(), reflect.Slice)
 	if err != nil {
 		return err
 	}
 
-	baseType := types.DeRef(sliceType.Elem())
+	baseType := typing.DeRef(sliceType.Elem())
 
 	s := reflect.ValueOf(on)
 	finishChan := make(chan bool)
@@ -94,7 +83,12 @@ func GroupBy(on, dest interface{}, cols []string, funcs map[string]AggrFunc) err
 	return nil
 }
 
-func processFun(v chan interface{}, funcs map[string]AggrFunc, dest reflect.Value, finish chan bool) {
+func processFun(
+	v chan interface{},
+	funcs map[string]AggrFunc,
+	dest reflect.Value,
+	finish chan bool,
+) {
 	defer wg.Done()
 	var isFinished bool
 	grouped := make([]interface{}, 0)
@@ -114,10 +108,11 @@ func processFun(v chan interface{}, funcs map[string]AggrFunc, dest reflect.Valu
 	}
 }
 
+// FoldFunc is a fold function
 type FoldFunc func(interface{}, interface{}) interface{}
 
-// GroupByFold groups a slice of structs with a fold function
-func GroupByFold(on, dest interface{}, cols []string, funcs map[string]FoldFunc) error { //nolint: deadcode
+// Fold groups by a slice of structs with a fold function
+func Fold(on, dest interface{}, cols []string, funcs map[string]FoldFunc) error {
 	groupMap := make(map[interface{}]int)
 	if reflect.TypeOf(on).Kind() != reflect.Slice {
 		return errors.New("on needs to be slice")
@@ -126,12 +121,12 @@ func GroupByFold(on, dest interface{}, cols []string, funcs map[string]FoldFunc)
 	destVal := reflect.ValueOf(dest)
 	direct := reflect.Indirect(destVal)
 
-	sliceType, err := types.BaseType(destVal.Type(), reflect.Slice)
+	sliceType, err := typing.Base(destVal.Type(), reflect.Slice)
 	if err != nil {
 		return err
 	}
 
-	baseType := types.DeRef(sliceType.Elem())
+	baseType := typing.DeRef(sliceType.Elem())
 
 	s := reflect.ValueOf(on)
 	for i := 0; i < s.Len(); i++ {

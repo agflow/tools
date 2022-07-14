@@ -1,4 +1,4 @@
-package sql
+package query
 
 import (
 	"embed"
@@ -12,10 +12,10 @@ import (
 	"github.com/agflow/tools/log"
 )
 
-// mustReadQueries is an utility method for MustReadSQL for sql files in queries subdirectory
+// mustRead is an utility method for MustReadSQL for sql files in queries subdirectory
 // Reads given folder and expects a SQL file named for each field of destination.
 // Then sets the content of file into that field.
-func mustReadQueries(v reflect.Value, queriesFS embed.FS, subfolder string, base ...string) {
+func mustRead(v reflect.Value, queriesFS embed.FS, subfolder string, base ...string) {
 	dir := subfolder
 	if len(base) > 0 {
 		dir = filepath.Join(base[0], subfolder)
@@ -39,10 +39,10 @@ func mustReadQueries(v reflect.Value, queriesFS embed.FS, subfolder string, base
 	for i := 0; i < v.NumField(); i++ {
 		names[i] = v.Type().Field(i).Name
 	}
-	setQueries(v, queriesFS, dir)
+	set(v, queriesFS, dir)
 }
 
-func setQueries(v reflect.Value, queriesFS embed.FS, dir string) {
+func set(v reflect.Value, queriesFS embed.FS, dir string) {
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Type().Field(i)
 		f := filepath.Join(dir, field.Name+".sql")
@@ -54,25 +54,25 @@ func setQueries(v reflect.Value, queriesFS embed.FS, dir string) {
 	}
 }
 
-// mustReadSQLFiles fills queries into Query variable.
-func mustReadSQLFiles(root string, queriesFS embed.FS, query interface{}) {
+// mustReadFiles fills queries into Query variable.
+func mustReadFiles(root string, queriesFS embed.FS, query interface{}) {
 	q := reflect.ValueOf(query).Elem()
 	v := reflect.Indirect(reflect.ValueOf(query))
 	for i := 0; i < v.NumField(); i++ {
 		f := v.Type().Field(i)
-		mustReadQueries(q.FieldByName(f.Name), queriesFS,
+		mustRead(q.FieldByName(f.Name), queriesFS,
 			filepath.Join(root, f.Tag.Get("sql")))
 	}
 }
 
-// MustLoadSQLQueries enables pgu to use queries
+// MustLoad loads queries
 // that are located in the default sql directory
-func MustLoadSQLQueries(queriesFS embed.FS, query interface{}) {
+func MustLoad(queriesFS embed.FS, query interface{}) {
 	f, err := fs.ReadDir(queriesFS, ".")
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, r := range f {
-		mustReadSQLFiles(r.Name(), queriesFS, query)
+		mustReadFiles(r.Name(), queriesFS, query)
 	}
 }
