@@ -32,12 +32,13 @@ func (v *NullableString) UnmarshalJSON(data []byte) error { // nolint: dupl
 	if err := json.Unmarshal(data, &x); err != nil {
 		return err
 	}
-	if x != nil {
-		v.Valid = true
-		v.String = *x
-	} else {
+	if x == nil || *x == "NaN" {
 		v.Valid = false
+		return nil
 	}
+
+	v.Valid = true
+	v.String = *x
 	return nil
 }
 
