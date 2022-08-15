@@ -46,7 +46,7 @@ func (c *Client) Get(ctx context.Context, key string) ([]byte, error) {
 	return c.Redis.Get(ctx, key).Bytes()
 }
 
-// Set sets `value` on `key` with a `timeout``
+// Set sets `value` on `key` with a `timeout`
 func (c *Client) Set(
 	ctx context.Context,
 	key string,

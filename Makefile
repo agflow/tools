@@ -2,7 +2,7 @@ export # export all `make` variables as environment variables.
 
 CI="agflow/ci:v0.8.15"
 
-GOCI_VERSION = v1.45.2
+GOCI_VERSION = v1.48.0
 GOCI = nogit/goci/$(GOCI_VERSION)/golangci-lint
 
 test:
