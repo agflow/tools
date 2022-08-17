@@ -92,3 +92,8 @@ func Fatalf(format string, v ...interface{}) {
 func Fatal(v ...interface{}) {
 	log.Fatal(v...)
 }
+
+// Panic logs in error level with a posterior Panic()
+func Panic(v ...interface{}) {
+	log.Panic(v...)
+}

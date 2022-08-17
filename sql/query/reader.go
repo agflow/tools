@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/agflow/tools/agerr"
 	"github.com/agflow/tools/log"
 )
 
@@ -75,4 +76,24 @@ func MustLoad(queriesFS embed.FS, query interface{}) {
 	for _, r := range f {
 		mustReadFiles(r.Name(), queriesFS, query)
 	}
+}
+
+// MustLoadSQLFiles queries loads queries that are located on `dir`
+func MustLoadSQLFiles(dir string, queriesFS embed.FS, dest interface{}) {
+	v := reflect.Indirect(reflect.ValueOf(dest))
+	for i := 0; i < v.NumField(); i++ {
+		sField := v.Type().Field(i)
+		vField := v.FieldByName(sField.Name)
+		setFile(dir+sField.Tag.Get("sql"), queriesFS, vField)
+	}
+}
+
+func setFile(dir string, queriesFS embed.FS, v reflect.Value) {
+	if v.Kind() == reflect.Struct {
+		MustLoadSQLFiles(dir+"/", queriesFS, v.Addr().Interface())
+		return
+	}
+	file, err := queriesFS.ReadFile(dir + ".sql")
+	agerr.Assert(err)
+	v.SetString(string(file))
 }
