@@ -15,11 +15,18 @@ type Client struct {
 type Service interface {
 	Select(interface{}, string, ...interface{}) error
 	Close() error
+	Exec(string, ...interface{}) error
 }
 
-// Select selects from `client` using the `query` and `args`
+// Select selects from `client` using the `query` and `args` and set the result on `dest`
 func (c *Client) Select(dest interface{}, query string, args ...interface{}) error {
 	return Select(c.DB, dest, query, args...)
+}
+
+// Exec executes from `client` using the `query` and `args`
+func (c *Client) Exec(query string, args ...interface{}) error {
+	_, err := c.DB.Exec(query, args...)
+	return err
 }
 
 // New return a new db.Client
