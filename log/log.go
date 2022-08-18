@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -149,9 +150,9 @@ func (li *MetaInfo) log() {
 	nowStr := time.Now().Format(timeFormat)
 	switch li.Lvl {
 	case PanicLvl:
-		log.Panic(li.Msg)
+		log.Printf("%s%s %s %s%s", red, nowStr, "[PANIC]", li.Msg, reset)
 	case FatalLvl:
-		log.Fatal(li.Msg)
+		log.Printf("%s%s %s %s%s", red, nowStr, "[FATAL]", li.Msg, reset)
 	case ErrorLvl:
 		log.Printf("%s%s %s %s%s", red, nowStr, "[ERROR]", li.Msg, reset)
 	case WarnLvl:
@@ -175,5 +176,11 @@ func exec(li MetaInfo) {
 		if err := hook(li); err != nil {
 			log.Printf("%s%s %s %v%s", red, nowStr, "[ERROR]", err, reset)
 		}
+	}
+	switch li.Lvl {
+	case PanicLvl:
+		panic(li.Msg)
+	case FatalLvl:
+		os.Exit(1)
 	}
 }
