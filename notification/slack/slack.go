@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	defaultChannel = "test-notifications"
+	// DefaultChannel is slack's default channel to send notifications
+	DefaultChannel = "test-notifications"
 	// ColorGood is slack's color "good"
 	ColorGood = "good"
 	// ColorWarning is slack's color "warning"
@@ -29,7 +30,7 @@ func New(token string, enabled bool) *Client {
 
 func getChannel(channel string) string {
 	if channel == "" {
-		return defaultChannel
+		return DefaultChannel
 	}
 	return channel
 }
