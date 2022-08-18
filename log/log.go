@@ -135,6 +135,16 @@ func Panicf(format string, v ...interface{}) {
 	Panic(fmt.Sprintf(format, v...))
 }
 
+// AddHook adds hook to the logger
+func AddHook(hook Hook) {
+	logger.Hooks = append(logger.Hooks, hook)
+}
+
+// EmptyHooks empties the hooks of the logger
+func EmptyHooks(hook Hook) {
+	logger.Hooks = []Hook{}
+}
+
 func (li *MetaInfo) log() {
 	nowStr := time.Now().Format(timeFormat)
 	switch li.Lvl {
