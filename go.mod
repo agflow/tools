@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-lambda-go v1.34.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/pkg/errors v0.9.1
+	github.com/slack-go/slack v0.11.2
 	github.com/stretchr/testify v1.8.0
 	github.com/thoas/go-funk v0.9.2
 )
@@ -14,6 +15,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect

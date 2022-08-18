@@ -11,7 +11,7 @@ type Client struct {
 	DB *sql.DB
 }
 
-// Service is an interface od db.Service
+// Service is an interface of db.Service
 type Service interface {
 	Select(interface{}, string, ...interface{}) error
 	Close() error
