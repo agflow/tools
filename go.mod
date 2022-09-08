@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/aws/aws-lambda-go v1.34.1
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/pkg/errors v0.9.1
 	github.com/slack-go/slack v0.11.2
 	github.com/stretchr/testify v1.8.0
