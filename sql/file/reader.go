@@ -1,4 +1,4 @@
-package query
+package file
 
 import (
 	"embed"
@@ -68,6 +68,8 @@ func mustReadFiles(root string, queriesFS embed.FS, query interface{}) {
 
 // MustLoad loads queries
 // that are located in the default sql directory
+//
+// Deprecated: MustLoadSQLFiles offers more functionality
 func MustLoad(queriesFS embed.FS, query interface{}) {
 	f, err := fs.ReadDir(queriesFS, ".")
 	if err != nil {
