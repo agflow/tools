@@ -68,8 +68,6 @@ func mustReadFiles(root string, queriesFS embed.FS, query interface{}) {
 
 // MustLoad loads queries
 // that are located in the default sql directory
-//
-// Deprecated: MustLoadSQLFiles offers more functionality
 func MustLoad(queriesFS embed.FS, query interface{}) {
 	f, err := fs.ReadDir(queriesFS, ".")
 	if err != nil {
@@ -77,16 +75,6 @@ func MustLoad(queriesFS embed.FS, query interface{}) {
 	}
 	for _, r := range f {
 		mustReadFiles(r.Name(), queriesFS, query)
-	}
-}
-
-// MustLoadSQLFiles queries loads queries that are located on `dir`
-func MustLoadSQLFiles(dir string, queriesFS embed.FS, dest interface{}) {
-	v := reflect.Indirect(reflect.ValueOf(dest))
-	for i := 0; i < v.NumField(); i++ {
-		sField := v.Type().Field(i)
-		vField := v.FieldByName(sField.Name)
-		setFile(dir+sField.Tag.Get("sql"), queriesFS, vField)
 	}
 }
 
@@ -98,4 +86,14 @@ func setFile(dir string, queriesFS embed.FS, v reflect.Value) {
 	file, err := queriesFS.ReadFile(dir + ".sql")
 	agerr.Assert(err)
 	v.SetString(string(file))
+}
+
+// MustLoadSQLFiles queries loads queries that are located on `dir`
+func MustLoadSQLFiles(dir string, queriesFS embed.FS, dest interface{}) {
+	v := reflect.Indirect(reflect.ValueOf(dest))
+	for i := 0; i < v.NumField(); i++ {
+		sField := v.Type().Field(i)
+		vField := v.FieldByName(sField.Name)
+		setFile(dir+sField.Tag.Get("sql"), queriesFS, vField)
+	}
 }
