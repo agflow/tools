@@ -9,7 +9,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/slack-go/slack v0.11.3
 	github.com/stretchr/testify v1.8.0
-	github.com/thoas/go-funk v0.9.2
+	github.com/thoas/go-funk v0.9.3
 )
 
 require (
