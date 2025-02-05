@@ -3,7 +3,7 @@ module github.com/agflow/tools
 go 1.18
 
 require (
-	github.com/aws/aws-lambda-go v1.34.1
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/pkg/errors v0.9.1
